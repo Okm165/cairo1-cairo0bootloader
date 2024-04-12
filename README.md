@@ -1,10 +1,16 @@
-# cairo1-cairo0bootloader
+# Cairo1->Cairo0Bootloader
 
 This project implements a modified version of the Cairo0 bootloader to facilitate the loading and execution of Cairo1 compiled PIE (Proof-Carrying Code) zip files. This enables interoperability between Cairo1 and Cairo0, allowing Cairo1 tasks to run within the Cairo0 bootloader environment.
 
 ## Getting Started
 
 To set up the project environment and run the bootloader, follow these steps:
+
+0. **Clone Repository**: Clone the repository and initialize submodules:
+   ```bash
+   git clone https://github.com/Okm165/cairo1-cairo0bootloader.git
+   git submodule update --init
+   ```
 
 1. **Setup Python Environment**: Ensure you have a Python 3.9.0 environment set up.
 
