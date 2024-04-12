@@ -23,4 +23,4 @@ log_and_run([
     --print_output \
     --proof_mode \
     --print_info"
-], "Running recursion step", cwd="cairo-lang")
+], "Running cairo1 in bootloader step", cwd="cairo-lang")
