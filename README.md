@@ -9,6 +9,7 @@ To set up the project environment and run the bootloader, follow these steps:
 0. **Clone Repository**: Clone the repository and initialize submodules:
    ```bash
    git clone https://github.com/Okm165/cairo1-cairo0bootloader.git
+   cd cairo1-cairo0bootloader
    git submodule update --init
    ```
 
