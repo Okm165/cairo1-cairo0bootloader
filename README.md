@@ -43,4 +43,4 @@ The execution of Cairo0 bootloader can then be proven using a STARK prover like 
 
 ## Work in Progress
 
-Currently, only output building is supported. More features will be added soon!
+Currently, only output builtin is supported. More builtins will be added soon!
