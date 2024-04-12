@@ -1,17 +1,19 @@
 # cairo1-cairo0bootloader
 
-This project implements a modified version of the cairo0 bootloader to facilitate the loading and execution of cairo1 compiled pie zip files. This allows for interoperability between cairo1 and cairo0, enabling cairo1 tasks to run within the cairo0 bootloader environment.
-
-## Overview
-
-The primary goal of this project is to extend the functionality of the existing cairo0 bootloader to support loading and running cairo1 compiled pie zip files. By doing so, it opens up opportunities for leveraging both cairo versions within the same environment, enhancing interoperability and compatibility.
+This project implements a modified version of the Cairo0 bootloader to facilitate the loading and execution of Cairo1 compiled PIE zip files. This enables interoperability between Cairo1 and Cairo0, allowing Cairo1 tasks to run within the Cairo0 bootloader environment.
 
 ## Getting Started
 
 To set up the project environment and run the bootloader, follow these steps:
 
-1. **Setup Python Environment**: Recommended Python 3.9.0 environment set up.
-   
+1. **Setup Python Environment**: Ensure you have a compatible Python environment set up.
+
 2. **Installation**: Run `python setup.py` to install the necessary dependencies and set up the project.
 
-3. **Run Bootloader**: Execute `python run.py` to start the bootloader and begin loading and executing cairo1 tasks within the cairo0 environment.
+3. **Compile Cairo1**: Compile Cairo1 files into the Cairo PIE format by running `python compile.py`.
+
+4. **Run Bootloader**: Start the bootloader by running `python run.py`, which will initiate the loading and execution of Cairo1 tasks within the Cairo0 environment.
+
+## Work in Progress
+
+Currently, only output building is supported. More features will be added soon!
