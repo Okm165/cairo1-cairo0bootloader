@@ -10,7 +10,7 @@ The primary goal of this project is to extend the functionality of the existing 
 
 To set up the project environment and run the bootloader, follow these steps:
 
-1. **Setup Python Environment**: Ensure you have a compatible Python environment set up.
+1. **Setup Python Environment**: Recommended Python 3.9.0 environment set up.
    
 2. **Installation**: Run `python setup.py` to install the necessary dependencies and set up the project.
 
