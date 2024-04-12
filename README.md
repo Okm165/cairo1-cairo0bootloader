@@ -1,4 +1,4 @@
-# cairo1-cairo0 Bootloader
+# cairo1-cairo0bootloader
 
 This project implements a modified version of the cairo0 bootloader to facilitate the loading and execution of cairo1 compiled pie zip files. This allows for interoperability between cairo1 and cairo0, enabling cairo1 tasks to run within the cairo0 bootloader environment.
 
