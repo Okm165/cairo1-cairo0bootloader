@@ -24,9 +24,5 @@ if __name__ == "__main__":
     ], "Compile simple_bootloader program", cwd="cairo-lang")
 
     log_and_run([
-        "git clone https://github.com/lambdaclass/cairo-vm.git",
-    ], "Clone cairo-vm", cwd=".")
-
-    log_and_run([
         "make deps",
     ], "Prepare cairo-vm", cwd="cairo-vm/cairo1-run")
