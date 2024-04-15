@@ -1,6 +1,9 @@
-use core::integer::U128BitAnd;
+use core::{
+    hash::{HashStateTrait, HashStateExTrait, Hash},
+    integer::U128BitAnd
+    pedersen::PedersenTrait,
+};
 use poseidon::{hades_permutation, poseidon_hash_span};
-use core::{pedersen::PedersenTrait, hash::{HashStateTrait, HashStateExTrait, Hash}};
 
 fn main() -> (bool, felt252, u128, felt252) {
     let range_check = 2_u128 > 1_u128;
