@@ -20,9 +20,5 @@ if __name__ == "__main__":
     ], "Installing cairo-lang", cwd="cairo-lang")
 
     log_and_run([
-        "cairo-compile --cairo_path=./src src/starkware/cairo/bootloaders/simple_bootloader/simple_bootloader.cairo --output simple_bootloader.json --proof_mode",
-    ], "Compile simple_bootloader program", cwd="cairo-lang")
-
-    log_and_run([
         "make deps",
     ], "Prepare cairo-vm", cwd="cairo-vm/cairo1-run")
