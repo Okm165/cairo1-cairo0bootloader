@@ -28,7 +28,7 @@ This example demonstrates running a simple Cairo1 program within the Cairo0 prov
 ```cairo
 use core::{
     hash::{HashStateTrait, HashStateExTrait, Hash},
-    integer::U128BitAnd
+    integer::U128BitAnd,
     pedersen::PedersenTrait,
 };
 use poseidon::{hades_permutation, poseidon_hash_span};
