@@ -5,9 +5,8 @@ use core::{
 };
 use poseidon::{hades_permutation, poseidon_hash_span};
 
-fn main() -> (bool, felt252, u128, felt252) {
-    let range_check = 2_u128 > 1_u128;
-    assert(range_check == true, 'Invalid value');
+fn main(index_a: u32, array_a: Array<u32>, index_b: u32, array_b: Array<u32>) -> (bool, felt252, u128, felt252) {
+    let range_check = *array_a.at(index_a) + *array_b.at(index_b) > 10;
 
     let mut state = PedersenTrait::new(2);
     state = state.update_with(2);
