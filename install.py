@@ -13,7 +13,6 @@ def log_and_run(commands, description, cwd=None):
 
 if __name__ == "__main__":
     log_and_run([
-        "pip install --upgrade pip", 
         "pip install cairo-lang==0.13.1",
         "pip install aiofiles",
         "pip install cairo/"
