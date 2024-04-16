@@ -15,7 +15,7 @@ To set up the project environment and run the bootloader, follow these steps:
 
 1. **Setup Python Environment**: Ensure you have a Python 3.9.0 environment set up & `pip install colorama` for pretty outputs.
 
-2. **Installation**: Run `python setup.py` to install the necessary dependencies and set up the project.
+2. **Installation**: Run `python install.py` to install the necessary dependencies and set up the project.
 
 3. **Compile Cairo1**: Compile Cairo1 files into the Cairo PIE format by running `python compile.py`.
 
