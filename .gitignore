@@ -163,4 +163,5 @@ cython_debug/
 *pie.zip
 
 # compiled bootloader
-*bootloader.json
+bootloader*.json
+!bootloader_input.json
