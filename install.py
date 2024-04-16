@@ -14,10 +14,10 @@ def log_and_run(commands, description, cwd=None):
 if __name__ == "__main__":
     log_and_run([
         "pip install --upgrade pip", 
-        "zip -r cairo-lang-0.13.1.zip cairo-lang-0.13.1", 
-        "pip install cairo-lang-0.13.1.zip",
-        "pip install aiofiles"
-    ], "Installing cairo-lang", cwd="cairo-lang")
+        "pip install cairo-lang==0.13.1",
+        "pip install aiofiles",
+        "pip install cairo/"
+    ], "Installing cairo-lang", cwd=".")
 
     log_and_run([
         "make deps",

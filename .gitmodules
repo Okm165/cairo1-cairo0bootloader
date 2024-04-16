@@ -1,7 +1,3 @@
-[submodule "cairo-lang"]
-	path = cairo-lang
-	url = https://github.com/Okm165/cairo-lang.git
-	branch = cairo1_cairo0bootloader
 [submodule "cairo-vm"]
 	path = cairo-vm
 	url = https://github.com/lambdaclass/cairo-vm.git

@@ -1,0 +1,10 @@
+{
+    "tasks": [
+        {
+            "type": "CairoPiePath",
+            "path": "cairo1_pie.zip",
+            "use_poseidon": true
+        }
+    ],
+    "single_page": true
+}
