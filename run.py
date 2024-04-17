@@ -8,8 +8,8 @@ if __name__ == "__main__":
         --program_input=bootloader_input.json \
         --air_public_input=bootloader_public_input.json \
         --air_private_input=bootloader_private_input.json \
-        --trace_file=bootloader_trace.json \
-        --memory_file=bootloader_memory.json \
+        --trace_file=bootloader.trace \
+        --memory_file=bootloader.memory \
         --print_output \
         --proof_mode \
         --print_info"
