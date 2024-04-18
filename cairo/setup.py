@@ -11,6 +11,8 @@ setuptools.setup(
     package_data={
         "bootloader.recursive_with_poseidon": ["*.cairo", "*/*.cairo"],
         "bootloader.recursive": ["*.cairo", "*/*.cairo"],
+        "bootloader.starknet_with_keccak": ["*.cairo", "*/*.cairo"],
+        "bootloader.starknet": ["*.cairo", "*/*.cairo"],
         "bootloader": ["*.cairo", "*/*.cairo"],
         "builtin_selection": ["*.cairo", "*/*.cairo"],
         "common.builtin_poseidon": ["*.cairo", "*/*.cairo"],

@@ -66,6 +66,7 @@ func run_simple_bootloader{
         range_check=1,
         ecdsa=2,
         bitwise=5,
+        ec_op=7,
         poseidon=6,
     );
 
