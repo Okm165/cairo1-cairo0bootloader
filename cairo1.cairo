@@ -5,19 +5,31 @@ use core::{
 };
 use poseidon::{hades_permutation, poseidon_hash_span};
 
-fn main(index_a: u32, array_a: Array<u32>, index_b: u32, array_b: Array<u32>) -> (bool, felt252, u128, felt252) {
-    let range_check = *array_a.at(index_a) + *array_b.at(index_b) > 10;
+#[derive(Drop, Serde)]
+struct Input {
+    a: u32,
+    b: u32,
+    c: u32,
+}
 
-    let mut state = PedersenTrait::new(2);
-    state = state.update_with(2);
-    let pedersen = state.finalize();
-    assert(pedersen == 1180550645873507273865212362837104046225859416703538577277065670066180087996, 'Invalid value');
+struct Output {
+    a_2: u32,
+    b_2: u32,
+    c_2: u32,
+}
 
-    let bitwise = U128BitAnd::bitand(0x4, 0x5);
-    assert(bitwise == 4, 'Invalid value');
+fn main(input: Array<felt252>) -> Output {
+    let mut input_span = input.span();
+    let input = Serde::<Input>::deserialize(ref input_span).unwrap();
 
-    let (poseidon, _, _) = hades_permutation(1, 2, 3);
-    assert(poseidon == 442682200349489646213731521593476982257703159825582578145778919623645026501, 'Invalid value');
+    let a_2 = input.a * input.a;
+    let b_2 = input.b * input.b;
+    let c_2 = input.c * input.c;
+    assert (a_2 + b_2 == c_2, 'invalid value');
 
-    (range_check, pedersen, bitwise, poseidon)
+    Output {
+        a_2,
+        b_2,
+        c_2,
+    }
 }

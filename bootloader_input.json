@@ -1,8 +1,8 @@
 {
     "tasks": [
         {
-            "type": "CairoPiePath",
-            "path": "cairo1_pie.zip",
+            "type": "Cairo1ProgramPath",
+            "path": "cairo1.cairo",
             "use_poseidon": true
         }
     ],

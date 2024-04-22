@@ -1,3 +1,6 @@
+import os
+import tempfile
+import subprocess
 import dataclasses
 from abc import abstractmethod
 from dataclasses import field
@@ -20,7 +23,7 @@ class TaskSpec(ValidatedMarshmallowDataclass):
     """
 
     @abstractmethod
-    def load_task(self) -> "Task":
+    def load_task(self, memory=None, args_start=None, args_len=None) -> "Task":
         """
         Returns the corresponding task.
         """
@@ -44,7 +47,7 @@ class RunProgramTask(TaskSpec, Task):
     def get_program(self) -> Program:
         return self.program
 
-    def load_task(self) -> "Task":
+    def load_task(self, memory=None, args_start=None, args_len=None) -> "Task":
         return self
 
 
@@ -54,22 +57,62 @@ class CairoPiePath(TaskSpec):
     path: str
     use_poseidon: bool
 
-    def load_task(self) -> "CairoPieTask":
+    def load_task(self, memory=None, args_start=None, args_len=None) -> "CairoPieTask":
         """
         Loads the PIE to memory.
         """
-        return CairoPieTask(cairo_pie=CairoPie.from_file(self.path), use_poseidon=self.use_poseidon)
+        return CairoPieTask(
+            cairo_pie=CairoPie.from_file(self.path), use_poseidon=self.use_poseidon
+        )
+
+
+@marshmallow_dataclass.dataclass(frozen=True)
+class Cairo1ProgramPath(TaskSpec):
+    TYPE: ClassVar[str] = "Cairo1ProgramPath"
+    path: str
+    use_poseidon: bool
+
+    def load_task(self, memory=None, args_start=None, args_len=None) -> "CairoPieTask":
+        """
+        Builds and Loads the PIE to memory.
+        """
+        with tempfile.NamedTemporaryFile() as cairo_pie_file:
+            cairo_pie_file_path = cairo_pie_file.name
+
+            args = [memory[args_start + i + 1] for i in range(args_len)]
+            formatted_args = f'[{" ".join(map(str, args))}]'
+
+            subprocess.run(
+                [
+                    "cairo1-run",
+                    self.path,
+                    "--layout",
+                    "all_cairo",
+                    "--args",
+                    formatted_args,
+                    "--cairo_pie_output",
+                    cairo_pie_file_path,
+                    "--append_return_values",
+                ],
+                check=True,
+            )
+
+            return CairoPieTask(
+                cairo_pie=CairoPie.from_file(cairo_pie_file_path),
+                use_poseidon=self.use_poseidon,
+            )
 
 
 class TaskSchema(OneOfSchema):
     """
-    Schema for Task/CairoPiePath.
+    Schema for Task/CairoPiePath/Cairo1ProgramPath.
     OneOfSchema adds a "type" field.
     """
 
     type_schemas: Dict[str, Type[marshmallow.Schema]] = {
         RunProgramTask.TYPE: RunProgramTask.Schema,
         CairoPiePath.TYPE: CairoPiePath.Schema,
+        Cairo1ProgramPath.TYPE: Cairo1ProgramPath.Schema,
     }
 
     def get_obj_type(self, obj):
@@ -88,7 +131,9 @@ class CairoPieTask(Task):
 @marshmallow_dataclass.dataclass(frozen=True)
 class SimpleBootloaderInput(ValidatedMarshmallowDataclass):
     tasks: List[TaskSpec] = field(
-        metadata=additional_metadata(marshmallow_field=mfields.List(mfields.Nested(TaskSchema)))
+        metadata=additional_metadata(
+            marshmallow_field=mfields.List(mfields.Nested(TaskSchema))
+        )
     )
     fact_topologies_path: Optional[str]
 

@@ -167,3 +167,6 @@ bootloader*.json
 !bootloader_input.json
 *.memory
 *.trace
+
+cairo
+corelib

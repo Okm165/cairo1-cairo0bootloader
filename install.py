@@ -19,5 +19,18 @@ if __name__ == "__main__":
     ], "Installing cairo-lang", cwd=".")
 
     log_and_run([
-        "make deps",
-    ], "Prepare cairo-vm", cwd="cairo-vm/cairo1-run")
+        "git clone https://github.com/starkware-libs/cairo.git",
+        "cd cairo",
+        "git checkout v2.6.3",
+        "cd ..",
+        "mv cairo/corelib/ .",
+        "rm -rf cairo/",
+    ], "Clone corelib", cwd=".")
+
+    log_and_run([
+        "cargo build --release",
+    ], "Build cairo-vm", cwd="cairo-vm/cairo1-run")
+
+    log_and_run([
+        "cp target/release/cairo1-run $HOME/.local/bin",
+    ], "Install cairo1-run", cwd="cairo-vm")
