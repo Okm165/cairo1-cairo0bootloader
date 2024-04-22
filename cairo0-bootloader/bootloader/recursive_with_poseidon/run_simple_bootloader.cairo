@@ -117,6 +117,12 @@ func verify_non_negative(num: felt, n_bits: felt) {
     return verify_non_negative(num=num_div2, n_bits=n_bits - 1);
 }
 
+struct Input {
+    a: felt,
+    b: felt,
+    c: felt,
+}
+
 struct Output {
     a_2: felt,
     b_2: felt,
@@ -146,12 +152,12 @@ func execute_tasks{builtin_ptrs: BuiltinData*, self_range_check_ptr}(
         return ();
     }
 
-    local args: felt*;
-    %{ ids.args = segments.add() %}
-    let args_start = args;
-    assert [args_start + 1] = 3;
-    assert [args_start + 2] = 4;
-    assert [args_start + 3] = 5;
+    local input_size = Input.SIZE;
+    local input: Input = Input(
+        a=3,
+        b=4,
+        c=5,
+    );
 
     %{
         from bootloader.objects import Task
@@ -159,7 +165,7 @@ func execute_tasks{builtin_ptrs: BuiltinData*, self_range_check_ptr}(
         # Pass current task to execute_task.
         task_id = len(simple_bootloader_input.tasks) - ids.n_tasks
         task = simple_bootloader_input.tasks[task_id].load_task(
-            memory=memory, args_start=ids.args_start, args_len=3
+            memory=memory, args_start=ids.input, args_len=ids.input_size
         )
     %}
     tempvar use_poseidon = nondet %{ 1 if task.use_poseidon else 0 %};
