@@ -28,9 +28,5 @@ if __name__ == "__main__":
     ], "Clone corelib", cwd=".")
 
     log_and_run([
-        "cargo build --release",
-    ], "Build cairo-vm", cwd="cairo-vm/cairo1-run")
-
-    log_and_run([
-        "cp target/release/cairo1-run $HOME/.local/bin",
-    ], "Install cairo1-run", cwd="cairo-vm")
+        "cargo install --path .",
+    ], "Install cairo-vm", cwd="cairo-vm/cairo1-run")
