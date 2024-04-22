@@ -15,7 +15,7 @@ if __name__ == "__main__":
     log_and_run([
         "pip install cairo-lang==0.13.1",
         "pip install aiofiles",
-        "pip install cairo/"
+        "pip install cairo0-bootloader/"
     ], "Installing cairo-lang", cwd=".")
 
     log_and_run([

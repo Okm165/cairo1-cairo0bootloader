@@ -29,7 +29,7 @@ jobs:
           pip install colorama
           python install.py
     
-      - name: Bootloader & Cairo1 pie - Compile
+      - name: Compile Bootloader
         run: |
           python compile.py
     
