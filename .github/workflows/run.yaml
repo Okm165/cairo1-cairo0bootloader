@@ -31,6 +31,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install colorama
           python install.py
+          echo "$PWD/cairo-vm/target/release/cairo1-run" >> $GITHUB_PATH
     
       - name: Compile Bootloader
         run: |
