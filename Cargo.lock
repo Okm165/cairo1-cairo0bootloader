@@ -721,7 +721,7 @@ dependencies = [
 [[package]]
 name = "cairo-vm"
 version = "1.0.0-rc1"
-source = "git+https://github.com/lambdaclass/cairo-vm#3f1f9ecfffcc52e6d30ce3254b55a7b7cb94eb7f"
+source = "git+https://github.com/Okm165/cairo-vm.git#5a910f8c65d35b6d206e78912768a2186b81a2c0"
 dependencies = [
  "anyhow",
  "ark-ff",
@@ -755,7 +755,7 @@ dependencies = [
 [[package]]
 name = "cairo1-run"
 version = "1.0.0-rc1"
-source = "git+https://github.com/lambdaclass/cairo-vm#3f1f9ecfffcc52e6d30ce3254b55a7b7cb94eb7f"
+source = "git+https://github.com/Okm165/cairo-vm.git#5a910f8c65d35b6d206e78912768a2186b81a2c0"
 dependencies = [
  "assert_matches",
  "bincode",

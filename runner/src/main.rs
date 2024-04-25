@@ -31,7 +31,7 @@ fn main() -> std::io::Result<()> {
         &sierra_program,
         Cairo1RunConfig {
             args: &args.args.0,
-            layout: LayoutName::recursive_with_poseidon,
+            layout: LayoutName::all_cairo,
             finalize_builtins: true,
             serialize_output: true,
             append_return_values: true,
