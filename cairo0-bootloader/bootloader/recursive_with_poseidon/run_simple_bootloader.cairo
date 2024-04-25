@@ -124,8 +124,6 @@ struct Input {
 }
 
 struct Output {
-    a_2: felt,
-    b_2: felt,
     c_2: felt,
 }
 
@@ -178,8 +176,6 @@ func execute_tasks{builtin_ptrs: BuiltinData*, self_range_check_ptr}(
 
     let output = cast(builtin_ptrs.output - Output.SIZE, Output*);
     %{
-        print(ids.output.a_2)
-        print(ids.output.b_2)
         print(ids.output.c_2)
     %}
 

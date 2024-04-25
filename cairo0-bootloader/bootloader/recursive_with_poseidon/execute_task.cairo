@@ -83,7 +83,7 @@ func execute_task{builtin_ptrs: BuiltinData*, self_range_check_ptr}(
         program_address, program_data_size = load_program(
             task=task, memory=memory, program_header=ids.program_header,
             builtins_offset=ids.ProgramHeader.builtin_list)
-        segments.finalize(program_data_base.segment_index, program_data_size)
+        segments.finalize(program_data_base.segment_index, program_data_size+1)
     %}
 
     // Verify that the bootloader version is compatible with the bootloader.

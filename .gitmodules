@@ -1,4 +1,0 @@
-[submodule "cairo-vm"]
-	path = cairo-vm
-	url = https://github.com/lambdaclass/cairo-vm.git
-	branch = cairo-lang-2.6.3

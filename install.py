@@ -27,24 +27,3 @@ if __name__ == "__main__":
         "Installing cairo-lang",
         cwd=".",
     )
-
-    log_and_run(
-        [
-            "git clone https://github.com/starkware-libs/cairo.git",
-            "cd cairo",
-            "git checkout v2.6.3",
-            "cd ..",
-            "mv cairo/corelib/ .",
-            "rm -rf cairo/",
-        ],
-        "Clone corelib",
-        cwd=".",
-    )
-
-    log_and_run(
-        [
-            "cargo install --path .",
-        ],
-        "Install cairo-vm",
-        cwd="cairo-vm/cairo1-run",
-    )
