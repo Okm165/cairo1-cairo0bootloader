@@ -17,10 +17,12 @@ def log_and_run(commands, description, cwd=None):
 
 
 if __name__ == "__main__":
+    subprocess.run("pip install colorama", shell=True, check=True, text=True)
+
     log_and_run(
         [
             "pip install cairo-lang==0.13.1",
-            "pip install aiofiles colorama",
+            "pip install aiofiles",
             "pip install cairo0-bootloader/",
         ],
         "Installing cairo-lang",
