@@ -27,3 +27,11 @@ if __name__ == "__main__":
         "Installing cairo-lang",
         cwd=".",
     )
+
+    log_and_run(
+        [
+            "cargo install --path .",
+        ],
+        "Installing cairo-vm-runner",
+        cwd="runner",
+    )
