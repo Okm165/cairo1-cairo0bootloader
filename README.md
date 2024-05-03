@@ -14,7 +14,7 @@ To set up the project environment and run the bootloader, follow these steps:
    git submodule update --init
    ```
 
-1. **Setup Python Environment**: Ensure you have a Python 3.9.0 environment set up & `pip install colorama` for pretty outputs.
+1. **Setup Python Environment**: Ensure you have a Python 3.9.0 environment set up.
 
 2. **Installation**: Run `python install.py` to install the necessary dependencies and set up the project.
 

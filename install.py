@@ -1,8 +1,7 @@
 import subprocess
-from colorama import Fore, Style
-
 
 def log_and_run(commands, description, cwd=None):
+    from colorama import Fore, Style
     full_command = " && ".join(commands)
     try:
         print(f"{Fore.YELLOW}Starting: {description}...{Style.RESET_ALL}")
@@ -21,7 +20,7 @@ if __name__ == "__main__":
     log_and_run(
         [
             "pip install cairo-lang==0.13.1",
-            "pip install aiofiles",
+            "pip install aiofiles colorama",
             "pip install cairo0-bootloader/",
         ],
         "Installing cairo-lang",
