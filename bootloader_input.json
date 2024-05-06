@@ -1,8 +1,8 @@
 {
     "tasks": [
         {
-            "type": "Cairo1ProgramPath",
-            "path": "cairo1.cairo",
+            "type": "CairoSierra",
+            "path": "cairo1/target/dev/example.sierra.json",
             "use_poseidon": true
         }
     ],

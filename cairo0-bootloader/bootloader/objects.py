@@ -102,10 +102,44 @@ class Cairo1ProgramPath(TaskSpec):
                 use_poseidon=self.use_poseidon,
             )
 
+@marshmallow_dataclass.dataclass(frozen=True)
+class CairoSierra(TaskSpec):
+    TYPE: ClassVar[str] = "CairoSierra"
+    path: str
+    use_poseidon: bool
+
+    def load_task(self, memory=None, args_start=None, args_len=None) -> "CairoPieTask":
+        """
+        Builds and Loads the PIE to memory.
+        """
+        with tempfile.NamedTemporaryFile() as cairo_pie_file:
+            cairo_pie_file_path = cairo_pie_file.name
+
+            args = [memory[args_start.address_ + i] for i in range(args_len)]
+            formatted_args = f'[{" ".join(map(str, args))}]'
+
+            subprocess.run(
+                [
+                    "runner",
+                    "--sierra_program",
+                    self.path,
+                    "--args",
+                    formatted_args,
+                    "--cairo_pie_output",
+                    cairo_pie_file_path,
+                ],
+                check=True,
+            )
+
+            return CairoPieTask(
+                cairo_pie=CairoPie.from_file(cairo_pie_file_path),
+                use_poseidon=self.use_poseidon,
+            )
+
 
 class TaskSchema(OneOfSchema):
     """
-    Schema for Task/CairoPiePath/Cairo1ProgramPath.
+    Schema for Task/CairoPiePath/Cairo1ProgramPath/CairoSierra
     OneOfSchema adds a "type" field.
     """
 
@@ -113,6 +147,7 @@ class TaskSchema(OneOfSchema):
         RunProgramTask.TYPE: RunProgramTask.Schema,
         CairoPiePath.TYPE: CairoPiePath.Schema,
         Cairo1ProgramPath.TYPE: Cairo1ProgramPath.Schema,
+        CairoSierra.TYPE: CairoSierra.Schema,
     }
 
     def get_obj_type(self, obj):

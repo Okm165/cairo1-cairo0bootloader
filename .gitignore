@@ -168,5 +168,6 @@ bootloader*.json
 *.memory
 *.trace
 
-cairo
-corelib
+# Added by cargo
+
+/target

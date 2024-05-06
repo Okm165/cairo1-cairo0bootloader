@@ -11,3 +11,11 @@ if __name__ == "__main__":
         "Compile bootloader program",
         cwd="cairo0-bootloader",
     )
+
+    log_and_run(
+        [
+            f"scarb build",
+        ],
+        "Compile cairo1 project",
+        cwd="cairo1",
+    )

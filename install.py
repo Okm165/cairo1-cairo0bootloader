@@ -1,8 +1,7 @@
 import subprocess
-from colorama import Fore, Style
-
 
 def log_and_run(commands, description, cwd=None):
+    from colorama import Fore, Style
     full_command = " && ".join(commands)
     try:
         print(f"{Fore.YELLOW}Starting: {description}...{Style.RESET_ALL}")
@@ -18,6 +17,8 @@ def log_and_run(commands, description, cwd=None):
 
 
 if __name__ == "__main__":
+    subprocess.run("pip install colorama", shell=True, check=True, text=True)
+
     log_and_run(
         [
             "pip install cairo-lang==0.13.1",
@@ -30,21 +31,8 @@ if __name__ == "__main__":
 
     log_and_run(
         [
-            "git clone https://github.com/starkware-libs/cairo.git",
-            "cd cairo",
-            "git checkout v2.6.3",
-            "cd ..",
-            "mv cairo/corelib/ .",
-            "rm -rf cairo/",
-        ],
-        "Clone corelib",
-        cwd=".",
-    )
-
-    log_and_run(
-        [
             "cargo install --path .",
         ],
-        "Install cairo-vm",
-        cwd="cairo-vm/cairo1-run",
+        "Installing cairo-vm-runner",
+        cwd="runner",
     )

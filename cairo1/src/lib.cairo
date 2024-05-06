@@ -1,10 +1,3 @@
-use core::{
-    hash::{HashStateTrait, HashStateExTrait, Hash},
-    integer::U128BitAnd,
-    pedersen::PedersenTrait,
-};
-use poseidon::{hades_permutation, poseidon_hash_span};
-
 #[derive(Drop, Serde)]
 struct Input {
     a: u32,
