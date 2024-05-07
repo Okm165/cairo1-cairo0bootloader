@@ -117,6 +117,18 @@ func verify_non_negative(num: felt, n_bits: felt) {
     return verify_non_negative(num=num_div2, n_bits=n_bits - 1);
 }
 
+struct Input {
+    a: felt,
+    b: felt,
+    c: felt,
+}
+
+struct Output {
+    a_2: felt,
+    b_2: felt,
+    c_2: felt,
+}
+
 // Executes the last n_tasks from simple_bootloader_input.tasks.
 //
 // Arguments:
@@ -133,16 +145,28 @@ func verify_non_negative(num: felt, n_bits: felt) {
 func execute_tasks{builtin_ptrs: BuiltinData*, self_range_check_ptr}(
     builtin_encodings: BuiltinData*, builtin_instance_sizes: BuiltinData*, n_tasks: felt
 ) {
+    // Allocate memory for local variables.
+    alloc_locals;
+
     if (n_tasks == 0) {
         return ();
     }
+
+    local input_size = Input.SIZE;
+    local input: Input = Input(
+        a=3,
+        b=4,
+        c=5,
+    );
 
     %{
         from bootloader.objects import Task
 
         # Pass current task to execute_task.
         task_id = len(simple_bootloader_input.tasks) - ids.n_tasks
-        task = simple_bootloader_input.tasks[task_id].load_task()
+        task = simple_bootloader_input.tasks[task_id].load_task(
+            memory=memory, args_start=ids.input, args_len=ids.input_size
+        )
     %}
     tempvar use_poseidon = nondet %{ 1 if task.use_poseidon else 0 %};
     // Call execute_task to execute the current task.
@@ -151,6 +175,13 @@ func execute_tasks{builtin_ptrs: BuiltinData*, self_range_check_ptr}(
         builtin_instance_sizes=builtin_instance_sizes,
         use_poseidon=use_poseidon,
     );
+
+    let output = cast(builtin_ptrs.output - Output.SIZE, Output*);
+    %{
+        print(ids.output.a_2)
+        print(ids.output.b_2)
+        print(ids.output.c_2)
+    %}
 
     return execute_tasks(
         builtin_encodings=builtin_encodings,

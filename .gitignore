@@ -167,3 +167,7 @@ bootloader*.json
 !bootloader_input.json
 *.memory
 *.trace
+
+# Added by cargo
+
+/target

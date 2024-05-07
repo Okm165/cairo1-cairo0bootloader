@@ -1,8 +1,8 @@
 {
     "tasks": [
         {
-            "type": "CairoPiePath",
-            "path": "cairo1_pie.zip",
+            "type": "CairoSierra",
+            "path": "cairo1/target/dev/example.sierra.json",
             "use_poseidon": true
         }
     ],
