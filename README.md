@@ -1,59 +1,58 @@
-# Cairo1->Cairo0Bootloader
+### Cairo1 -> Cairo0 Bootloader
+
 [![Continuous Integration - run](https://github.com/Okm165/cairo1-cairo0bootloader/actions/workflows/run.yaml/badge.svg)](https://github.com/Okm165/cairo1-cairo0bootloader/actions/workflows/run.yaml)
 
-This project implements a modified version of the Cairo0 bootloader to facilitate the loading and execution of Cairo1 compiled PIE zip files. This enables interoperability between Cairo1 and Cairo0, allowing Cairo1 tasks to run within the Cairo0 bootloader environment.
+This project implements a modified Cairo0 bootloader to streamline the loading and execution of Cairo1 Sierra projects. This facilitates seamless interoperability between Cairo1 and Cairo0, enabling Cairo1 Scarb projects to operate within the Cairo0 bootloader environment.
 
 ## Getting Started
 
 To set up the project environment and run the bootloader, follow these steps:
 
-0. **Clone Repository**: Clone the repository and initialize submodules:
-   ```bash
-   git clone https://github.com/Okm165/cairo1-cairo0bootloader.git
-   cd cairo1-cairo0bootloader
-   git submodule update --init
-   ```
+1. **Python Environment Setup**: It's recommended to install Python 3.9.0.
 
-1. **Setup Python Environment**: Ensure you have a Python 3.9.0 environment set up.
+2. **Installation**: Execute `python install.py` to install dependencies and configure the project.
 
-2. **Installation**: Run `python install.py` to install the necessary dependencies and set up the project.
+3. **Cairo1 Compilation**: Convert Cairo1 Scarb projects into the Sierra format by running `python compile.py`.
 
-3. **Compile Cairo1**: Compile Cairo1 files into the Cairo PIE format by running `python compile.py`.
-
-4. **Run Bootloader**: Start the bootloader by running `python run.py`, which will initiate the loading and execution of Cairo1 tasks within the Cairo0 environment.
+4. **Running the Bootloader**: Start the bootloader with `python run.py`, which will load and execute the compiled Cairo1 program within the Cairo0 environment.
 
 ---
 
-This example demonstrates running a simple Cairo1 program within the Cairo0 provable environment:
+This example showcases the exchange of data between a Cairo0 host provable environment and a Cairo1 program:
 
 ```cairo
-use core::{
-    hash::{HashStateTrait, HashStateExTrait, Hash},
-    integer::U128BitAnd,
-    pedersen::PedersenTrait,
-};
-use poseidon::{hades_permutation, poseidon_hash_span};
+#[derive(Drop, Serde)]
+struct Input {
+    a: u32,
+    b: u32,
+    c: u32,
+}
 
-fn main(index_a: u32, array_a: Array<u32>, index_b: u32, array_b: Array<u32>) -> (bool, felt252, u128, felt252) {
-    let range_check = *array_a.at(index_a) + *array_b.at(index_b) > 10;
+struct Output {
+    a_2: u32,
+    b_2: u32,
+    c_2: u32,
+}
 
-    let mut state = PedersenTrait::new(2);
-    state = state.update_with(2);
-    let pedersen = state.finalize();
-    assert(pedersen == 1180550645873507273865212362837104046225859416703538577277065670066180087996, 'Invalid value');
+fn main(input: Array<felt252>) -> Output {
+    let mut input_span = input.span();
+    let input = Serde::<Input>::deserialize(ref input_span).unwrap();
 
-    let bitwise = U128BitAnd::bitand(0x4, 0x5);
-    assert(bitwise == 4, 'Invalid value');
+    let a_2 = input.a * input.a;
+    let b_2 = input.b * input.b;
+    let c_2 = input.c * input.c;
+    assert (a_2 + b_2 == c_2, 'invalid value');
 
-    let (poseidon, _, _) = hades_permutation(1, 2, 3);
-    assert(poseidon == 442682200349489646213731521593476982257703159825582578145778919623645026501, 'Invalid value');
-
-    (range_check, pedersen, bitwise, poseidon)
+    Output {
+        a_2,
+        b_2,
+        c_2,
+    }
 }
 ```
 
-The execution of Cairo0 bootloader can then be proven using a STARK prover like [stone-prover](https://github.com/starkware-libs/stone-prover).
+The Cairo0 bootloader's execution can be verified using a STARK prover like [stone-prover](https://github.com/starkware-libs/stone-prover).
 
 ## Work in Progress
 
-At the moment, the following builtins are supported: `[output, range_check, pedersen, bitwise, poseidon]`. Stay tuned for more additions!
+Currently, the project supports the following builtins: `[output, range_check, pedersen, bitwise, poseidon]`. Expect further updates!
