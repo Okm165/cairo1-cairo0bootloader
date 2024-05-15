@@ -27,7 +27,7 @@ fn main() -> std::io::Result<()> {
             Err(_) => panic!("program parsing failed"),
         };
 
-    let (runner, vm, _return_values, _serialized_output) = cairo1_run::cairo_run_program(
+    let (runner, _return_values, _serialized_output) = cairo1_run::cairo_run_program(
         &sierra_program,
         Cairo1RunConfig {
             args: &args.args.0,
@@ -41,7 +41,7 @@ fn main() -> std::io::Result<()> {
     .unwrap();
 
     runner
-        .get_cairo_pie(&vm)
+        .get_cairo_pie()
         .unwrap()
         .write_zip_file(&args.cairo_pie_output)
         .unwrap();

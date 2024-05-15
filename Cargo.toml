@@ -9,7 +9,7 @@ version = "0.1.0"
 [workspace.dependencies]
 cairo-lang-compiler = { version = "2.6.3", default-features = false }
 cairo-lang-sierra = { version = "2.6.3", default-features = false }
-cairo-vm = { git = "https://github.com/Okm165/cairo-vm.git", branch = "cairo1-cairo0bootloader"}
-cairo1-run = { git = "https://github.com/Okm165/cairo-vm.git", branch = "cairo1-cairo0bootloader"}
+cairo-vm = { git = "https://github.com/lambdaclass/cairo-vm.git", ref = "aecbb3f01dacb6d3f90256c808466c2c37606252"}
+cairo1-run = { git = "https://github.com/lambdaclass/cairo-vm.git", ref = "aecbb3f01dacb6d3f90256c808466c2c37606252"}
 clap = { version = "4.3.10", features = ["derive"] }
 serde_json = "1"
