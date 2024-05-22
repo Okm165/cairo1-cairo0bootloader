@@ -6,16 +6,8 @@ if __name__ == "__main__":
 
     log_and_run(
         [
-            f"cairo-compile --cairo_path=. bootloader/recursive_with_poseidon/simple_bootloader.cairo --output {current_dir}/bootloader.json --proof_mode",
+            f"cairo-compile --cairo_path=. bootloader/starknet/simple_bootloader.cairo --output {current_dir}/bootloader.json --proof_mode",
         ],
         "Compile bootloader program",
         cwd="cairo0-bootloader",
-    )
-
-    log_and_run(
-        [
-            f"scarb build",
-        ],
-        "Compile cairo1 project",
-        cwd="cairo1",
     )

@@ -15,6 +15,6 @@ if __name__ == "__main__":
         --proof_mode \
         --print_info"
         ],
-        "Running cairo1 pie in cairo0 bootloader",
+        "Running contract in cairo0 bootloader",
         cwd=".",
     )
