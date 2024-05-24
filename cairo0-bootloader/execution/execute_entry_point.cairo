@@ -224,6 +224,7 @@ func execute_entry_point{
     call abs contract_entry_point;
     %{ vm_exit_scope() %}
 
+    
     // Retrieve returned_builtin_ptrs_subset.
     // Note that returned_builtin_ptrs_subset cannot be set in a hint because doing so will allow a
     // malicious prover to lie about the storage changes of a valid contract.
