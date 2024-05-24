@@ -48,6 +48,10 @@ struct BuiltinData {
 }
 
 struct ExecutionInfo {
+    caller_address: felt,
+    // The execution is done in the context of the contract at this address.
+    // It controls the storage being used, messages sent to L1, calling contracts, etc.
+    contract_address: felt,
     // The entry point selector.
     selector: felt,
 }
@@ -55,10 +59,14 @@ struct ExecutionInfo {
 // Represents the execution context during the execution of contract code.
 struct ExecutionContext {
     entry_point_type: felt,
+    // The hash of the contract class to execute.
+    class_hash: felt,
     calldata_size: felt,
     calldata: felt*,
     // Additional information about the execution.
     execution_info: ExecutionInfo*,
+    // Information about the transaction that triggered the execution.
+    deprecated_tx_info: DeprecatedTxInfo*,
 }
 
 // Represents the arguments pushed to the stack before calling an entry point.
@@ -172,14 +180,11 @@ func execute_entry_point{
     local range_check_ptr = range_check_ptr;
     local contract_entry_point: felt* = compiled_class.bytecode_ptr + entry_point_offset;
 
-    local os_context: felt*;
     local syscall_ptr: felt*;
 
     %{
-        ids.os_context = segments.add()
         ids.syscall_ptr = segments.add()
     %}
-    assert [os_context] = cast(syscall_ptr, felt);
 
     let builtin_ptrs: BuiltinPointers* = prepare_builtin_ptrs_for_execute(builtin_ptrs);
 
@@ -197,20 +202,23 @@ func execute_entry_point{
         n_selected_builtins=entry_point_n_builtins,
     );
 
-    %{
-        print(ids.compiled_class_entry_point.n_builtins)
-        
-    %}
-
     // Use tempvar to pass the rest of the arguments to contract_entry_point().
     let current_ap = ap;
     tempvar args = EntryPointCallArguments(
-        gas_builtin=1000000000,
+        gas_builtin=10000000000,
         syscall_ptr=syscall_ptr,
         calldata_start=calldata_start,
         calldata_end=calldata_end,
     );
     static_assert ap == current_ap + EntryPointCallArguments.SIZE;
+
+    %{
+        print(ids.compiled_class_entry_point.n_builtins)
+        print(ids.calldata_start)
+        print(ids.calldata_end)
+        print(ids.contract_entry_point)
+        print(ids.syscall_ptr)
+    %}
 
     %{ vm_enter_scope() %}
     call abs contract_entry_point;
@@ -219,12 +227,12 @@ func execute_entry_point{
     // Retrieve returned_builtin_ptrs_subset.
     // Note that returned_builtin_ptrs_subset cannot be set in a hint because doing so will allow a
     // malicious prover to lie about the storage changes of a valid contract.
-    let (ap_val) = get_ap();
-    local return_values_ptr: felt* = ap_val - EntryPointReturnValues.SIZE;
-    local returned_builtin_ptrs_subset: felt* = return_values_ptr - entry_point_n_builtins;
-    local entry_point_return_values: EntryPointReturnValues* = cast(
-        return_values_ptr, EntryPointReturnValues*
-    );
+    // let (ap_val) = get_ap();
+    // local return_values_ptr: felt* = ap_val - EntryPointReturnValues.SIZE;
+    // local returned_builtin_ptrs_subset: felt* = return_values_ptr - entry_point_n_builtins;
+    // local entry_point_return_values: EntryPointReturnValues* = cast(
+    //     return_values_ptr, EntryPointReturnValues*
+    // );
 
     return (retdata_size=0, retdata=cast(0, felt*));
 }
