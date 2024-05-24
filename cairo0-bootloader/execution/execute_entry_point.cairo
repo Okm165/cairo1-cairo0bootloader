@@ -173,13 +173,8 @@ func execute_entry_point{
 
     local syscall_ptr: felt*;
 
-    %{  
-        from starkware.starknet.core.os.syscall_handler import SyscallHandlerBase
-
+    %{
         ids.syscall_ptr = segments.add()
-
-        syscall_handler = SyscallHandlerBase(ids.syscall_ptr)
-        syscall_handler.set_syscall_ptr(syscall_ptr=ids.syscall_ptr)
     %}
 
     let builtin_ptrs: BuiltinPointers* = prepare_builtin_ptrs_for_execute(builtin_ptrs);
@@ -216,7 +211,7 @@ func execute_entry_point{
         print(ids.syscall_ptr)
     %}
 
-    %{ vm_enter_scope({'syscall_handler': syscall_handler}) %}
+    %{ vm_enter_scope() %}
     call abs contract_entry_point;
     %{ vm_exit_scope() %}
 
