@@ -31,6 +31,7 @@ struct BuiltinData {
     ecdsa: felt,
     bitwise: felt,
     ec_op: felt,
+    keccak: felt,
     poseidon: felt,
 }
 
