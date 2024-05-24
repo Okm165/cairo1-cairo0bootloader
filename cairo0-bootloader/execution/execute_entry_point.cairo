@@ -48,25 +48,16 @@ struct BuiltinData {
 }
 
 struct ExecutionInfo {
-    caller_address: felt,
-    // The execution is done in the context of the contract at this address.
-    // It controls the storage being used, messages sent to L1, calling contracts, etc.
-    contract_address: felt,
-    // The entry point selector.
     selector: felt,
 }
 
 // Represents the execution context during the execution of contract code.
 struct ExecutionContext {
     entry_point_type: felt,
-    // The hash of the contract class to execute.
-    class_hash: felt,
     calldata_size: felt,
     calldata: felt*,
     // Additional information about the execution.
     execution_info: ExecutionInfo*,
-    // Information about the transaction that triggered the execution.
-    deprecated_tx_info: DeprecatedTxInfo*,
 }
 
 // Represents the arguments pushed to the stack before calling an entry point.
@@ -182,8 +173,13 @@ func execute_entry_point{
 
     local syscall_ptr: felt*;
 
-    %{
+    %{  
+        from starkware.starknet.core.os.syscall_handler import SyscallHandlerBase
+
         ids.syscall_ptr = segments.add()
+
+        syscall_handler = SyscallHandlerBase(ids.syscall_ptr)
+        syscall_handler.set_syscall_ptr(syscall_ptr=ids.syscall_ptr)
     %}
 
     let builtin_ptrs: BuiltinPointers* = prepare_builtin_ptrs_for_execute(builtin_ptrs);
@@ -220,11 +216,11 @@ func execute_entry_point{
         print(ids.syscall_ptr)
     %}
 
-    %{ vm_enter_scope() %}
+    %{ vm_enter_scope({'syscall_handler': syscall_handler}) %}
     call abs contract_entry_point;
     %{ vm_exit_scope() %}
 
-    
+
     // Retrieve returned_builtin_ptrs_subset.
     // Note that returned_builtin_ptrs_subset cannot be set in a hint because doing so will allow a
     // malicious prover to lie about the storage changes of a valid contract.

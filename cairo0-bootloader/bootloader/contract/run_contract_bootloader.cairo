@@ -59,18 +59,12 @@ func run_contract_bootloader{
     );
     let builtin_encodings = &local_builtin_encodings;
 
-    local calldata = 0x0;
+    local calldata: felt*;
+    %{
+        ids.calldata = segments.add()
+    %}
+
     local execution_info: ExecutionInfo = ExecutionInfo(
-        block_info=0,
-        tx_info=0,
-
-        // Entry-point-specific info.
-
-        caller_address=0,
-        // The execution is done in the context of the contract at this address.
-        // It controls the storage being used, messages sent to L1, calling contracts, etc.
-        contract_address=0,
-        // The entry point selector.
         selector=0,
     );
 
@@ -85,14 +79,10 @@ func run_contract_bootloader{
 
     local execution_context: ExecutionContext = ExecutionContext(
         entry_point_type=ENTRY_POINT_TYPE_EXTERNAL,
-        // The hash of the contract class to execute.
-        class_hash=0,
         calldata_size=0,
-        calldata=0,
+        calldata=calldata,
         // Additional information about the execution.
         execution_info=&execution_info,
-        // Information about the transaction that triggered the execution.
-        deprecated_tx_info=0,
     );
 
     with builtin_ptrs, builtin_encodings {
