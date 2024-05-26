@@ -18,5 +18,5 @@ setuptools.setup(
         "common.builtin_poseidon": ["*.cairo", "*/*.cairo"],
         "common": ["*.cairo", "*/*.cairo"],
         "lang.compiler": ["cairo.ebnf", "lib/*.cairo"],
-    }
+    },
 )

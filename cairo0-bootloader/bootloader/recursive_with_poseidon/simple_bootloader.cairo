@@ -1,8 +1,6 @@
 %builtins output pedersen range_check bitwise poseidon
 
-from bootloader.recursive_with_poseidon.run_simple_bootloader import (
-    run_simple_bootloader,
-)
+from bootloader.recursive_with_poseidon.run_simple_bootloader import run_simple_bootloader
 from common.cairo_builtins import HashBuiltin, PoseidonBuiltin
 from common.registers import get_fp_and_pc
 

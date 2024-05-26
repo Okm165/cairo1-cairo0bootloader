@@ -102,6 +102,7 @@ class Cairo1ProgramPath(TaskSpec):
                 use_poseidon=self.use_poseidon,
             )
 
+
 @marshmallow_dataclass.dataclass(frozen=True)
 class CairoSierra(TaskSpec):
     TYPE: ClassVar[str] = "CairoSierra"

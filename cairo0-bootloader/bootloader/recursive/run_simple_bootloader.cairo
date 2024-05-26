@@ -11,10 +11,7 @@ from common.registers import get_fp_and_pc
 // Updated builtin pointers after executing all programs.
 // fact_topologies - that corresponds to the tasks (hint variable).
 func run_simple_bootloader{
-    output_ptr: felt*,
-    pedersen_ptr: HashBuiltin*,
-    range_check_ptr,
-    bitwise_ptr,
+    output_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr, bitwise_ptr
 }() {
     alloc_locals;
     local task_range_check_ptr;
@@ -45,17 +42,11 @@ func run_simple_bootloader{
 
     // A struct containing the encoding of each builtin.
     local builtin_encodings: BuiltinData = BuiltinData(
-        output='output',
-        pedersen='pedersen',
-        range_check='range_check',
-        bitwise='bitwise',
+        output='output', pedersen='pedersen', range_check='range_check', bitwise='bitwise'
     );
 
     local builtin_instance_sizes: BuiltinData = BuiltinData(
-        output=1,
-        pedersen=3,
-        range_check=1,
-        bitwise=5,
+        output=1, pedersen=3, range_check=1, bitwise=5
     );
 
     // Call execute_tasks.

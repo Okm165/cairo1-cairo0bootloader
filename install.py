@@ -1,7 +1,9 @@
 import subprocess
 
+
 def log_and_run(commands, description, cwd=None):
     from colorama import Fore, Style
+
     full_command = " && ".join(commands)
     try:
         print(f"{Fore.YELLOW}Starting: {description}...{Style.RESET_ALL}")

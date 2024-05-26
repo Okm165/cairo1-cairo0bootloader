@@ -55,11 +55,7 @@ func run_simple_bootloader{
     );
 
     local builtin_instance_sizes: BuiltinData = BuiltinData(
-        output=1,
-        pedersen=3,
-        range_check=1,
-        bitwise=5,
-        poseidon=6,
+        output=1, pedersen=3, range_check=1, bitwise=5, poseidon=6
     );
 
     // Call execute_tasks.
@@ -153,11 +149,7 @@ func execute_tasks{builtin_ptrs: BuiltinData*, self_range_check_ptr}(
     }
 
     local input_size = Input.SIZE;
-    local input: Input = Input(
-        a=3,
-        b=4,
-        c=5,
-    );
+    local input: Input = Input(a=3, b=4, c=5);
 
     %{
         from bootloader.objects import Task

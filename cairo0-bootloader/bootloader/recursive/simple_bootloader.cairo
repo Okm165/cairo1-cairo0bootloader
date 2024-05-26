@@ -1,17 +1,10 @@
 %builtins output pedersen range_check bitwise
 
-from bootloader.recursive.run_simple_bootloader import (
-    run_simple_bootloader,
-)
+from bootloader.recursive.run_simple_bootloader import run_simple_bootloader
 from common.cairo_builtins import HashBuiltin
 from common.registers import get_fp_and_pc
 
-func main{
-    output_ptr: felt*,
-    pedersen_ptr: HashBuiltin*,
-    range_check_ptr,
-    bitwise_ptr,
-}() {
+func main{output_ptr: felt*, pedersen_ptr: HashBuiltin*, range_check_ptr, bitwise_ptr}() {
     %{
         from bootloader.objects import SimpleBootloaderInput
         simple_bootloader_input = SimpleBootloaderInput.Schema().load(program_input)
