@@ -176,7 +176,7 @@ func execute_tasks{builtin_ptrs: BuiltinData*, self_range_check_ptr}(
         use_poseidon=use_poseidon,
     );
 
-    let output = cast(builtin_ptrs.output - Output.SIZE, Output*);
+    let output = cast(builtin_ptrs.output - Output.SIZE - Input.SIZE - 1, Output*);
     %{
         print(ids.output.a_2)
         print(ids.output.b_2)
