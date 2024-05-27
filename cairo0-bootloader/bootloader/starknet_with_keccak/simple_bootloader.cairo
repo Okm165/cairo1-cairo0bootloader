@@ -1,8 +1,6 @@
 %builtins output pedersen range_check ecdsa bitwise ec_op keccak poseidon
 
-from bootloader.starknet_with_keccak.run_simple_bootloader import (
-    run_simple_bootloader,
-)
+from bootloader.starknet_with_keccak.run_simple_bootloader import run_simple_bootloader
 from common.cairo_builtins import HashBuiltin, PoseidonBuiltin
 from common.registers import get_fp_and_pc
 

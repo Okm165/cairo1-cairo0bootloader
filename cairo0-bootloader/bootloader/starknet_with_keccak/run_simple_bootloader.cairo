@@ -64,14 +64,7 @@ func run_simple_bootloader{
     );
 
     local builtin_instance_sizes: BuiltinData = BuiltinData(
-        output=1,
-        pedersen=3,
-        range_check=1,
-        ecdsa=2,
-        bitwise=5,
-        ec_op=7,
-        keccak=16,
-        poseidon=6,
+        output=1, pedersen=3, range_check=1, ecdsa=2, bitwise=5, ec_op=7, keccak=16, poseidon=6
     );
 
     // Call execute_tasks.

@@ -1,9 +1,12 @@
 %builtins output pedersen range_check ecdsa bitwise ec_op keccak poseidon
 
-from bootloader.contract.run_contract_bootloader import (
-    run_contract_bootloader,
+from bootloader.contract.run_contract_bootloader import run_contract_bootloader
+from starkware.cairo.common.cairo_builtins import (
+    HashBuiltin,
+    PoseidonBuiltin,
+    BitwiseBuiltin,
+    KeccakBuiltin,
 )
-from starkware.cairo.common.cairo_builtins import HashBuiltin, PoseidonBuiltin, BitwiseBuiltin, KeccakBuiltin
 from starkware.cairo.common.registers import get_fp_and_pc
 from contract_class.compiled_class import CompiledClass
 

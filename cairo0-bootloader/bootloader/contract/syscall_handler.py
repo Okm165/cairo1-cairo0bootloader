@@ -1,7 +1,11 @@
 from typing import Iterable
-from starkware.starknet.core.os.syscall_handler import SyscallHandlerBase, OsExecutionHelper
+from starkware.starknet.core.os.syscall_handler import (
+    SyscallHandlerBase,
+    OsExecutionHelper,
+)
 from starkware.cairo.lang.vm.relocatable import RelocatableValue, MaybeRelocatable
 from starkware.cairo.lang.vm.memory_segments import MemorySegmentManager
+
 
 class SyscallHandler(SyscallHandlerBase):
     """
@@ -22,7 +26,7 @@ class SyscallHandler(SyscallHandlerBase):
         segment_start = self.segments.add()
         self.segments.write_arg(ptr=segment_start, arg=data)
         return segment_start
-    
+
     def _allocate_segment_for_retdata(self):
         # Implementation here
         pass

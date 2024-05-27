@@ -29,11 +29,7 @@ from starkware.starknet.core.os.constants import (
     ENTRY_POINT_TYPE_L1_HANDLER,
     NOP_ENTRY_POINT_OFFSET,
 )
-from contract_class.compiled_class import (
-    CompiledClass,
-    CompiledClassEntryPoint,
-    CompiledClassFact,
-)
+from contract_class.compiled_class import CompiledClass, CompiledClassEntryPoint, CompiledClassFact
 from starkware.starknet.core.os.output import OsCarriedOutputs
 
 struct BuiltinData {
@@ -88,9 +84,7 @@ func call_execute_syscalls{
     contract_class_changes: DictAccess*,
     outputs: OsCarriedOutputs*,
 }(block_context: BlockContext*, execution_context: ExecutionContext*, syscall_ptr_end: felt*) {
-    %{
-        print("call_execute_syscalls")
-    %}
+    %{ print("call_execute_syscalls") %}
 }
 
 // Returns the CompiledClassEntryPoint, based on 'compiled_class' and 'execution_context'.
@@ -148,9 +142,7 @@ func get_entry_point{range_check_ptr}(
 // block_context - a global context that is fixed throughout the block.
 // execution_context - The context for the current execution.
 func execute_entry_point{
-    range_check_ptr,
-    builtin_ptrs: BuiltinPointers*,
-    builtin_encodings: BuiltinData*,
+    range_check_ptr, builtin_ptrs: BuiltinPointers*, builtin_encodings: BuiltinData*
 }(compiled_class: CompiledClass*, execution_context: ExecutionContext*) -> (
     retdata_size: felt, retdata: felt*
 ) {
@@ -173,9 +165,7 @@ func execute_entry_point{
 
     local syscall_ptr: felt*;
 
-    %{
-        ids.syscall_ptr = segments.add()
-    %}
+    %{ ids.syscall_ptr = segments.add() %}
 
     let builtin_ptrs: BuiltinPointers* = prepare_builtin_ptrs_for_execute(builtin_ptrs);
 
@@ -214,7 +204,6 @@ func execute_entry_point{
     %{ vm_enter_scope() %}
     call abs contract_entry_point;
     %{ vm_exit_scope() %}
-
 
     // Retrieve returned_builtin_ptrs_subset.
     // Note that returned_builtin_ptrs_subset cannot be set in a hint because doing so will allow a

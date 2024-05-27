@@ -1,4 +1,9 @@
-from starkware.cairo.common.cairo_builtins import HashBuiltin, PoseidonBuiltin, BitwiseBuiltin, KeccakBuiltin
+from starkware.cairo.common.cairo_builtins import (
+    HashBuiltin,
+    PoseidonBuiltin,
+    BitwiseBuiltin,
+    KeccakBuiltin,
+)
 from starkware.cairo.common.registers import get_fp_and_pc
 from contract_class.compiled_class import CompiledClass
 from starkware.starknet.builtins.segment_arena.segment_arena import new_arena
@@ -7,7 +12,12 @@ from starkware.starknet.core.os.builtins import (
     NonSelectableBuiltins,
     SelectableBuiltins,
 )
-from bootloader.contract.execute_entry_point import execute_entry_point, ExecutionContext, ExecutionInfo, BuiltinData
+from bootloader.contract.execute_entry_point import (
+    execute_entry_point,
+    ExecutionContext,
+    ExecutionInfo,
+    BuiltinData,
+)
 
 // Loads the programs and executes them.
 //
@@ -60,13 +70,9 @@ func run_contract_bootloader{
     let builtin_encodings = &local_builtin_encodings;
 
     local calldata: felt*;
-    %{
-        ids.calldata = segments.add()
-    %}
+    %{ ids.calldata = segments.add() %}
 
-    local execution_info: ExecutionInfo = ExecutionInfo(
-        selector=0,
-    );
+    local execution_info: ExecutionInfo = ExecutionInfo(selector=0);
 
     from starkware.starknet.core.os.constants import (
         DEFAULT_ENTRY_POINT_SELECTOR,
@@ -81,7 +87,6 @@ func run_contract_bootloader{
         entry_point_type=ENTRY_POINT_TYPE_EXTERNAL,
         calldata_size=0,
         calldata=calldata,
-        // Additional information about the execution.
         execution_info=&execution_info,
     );
 
