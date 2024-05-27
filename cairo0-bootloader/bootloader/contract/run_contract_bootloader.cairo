@@ -7,7 +7,7 @@ from starkware.starknet.core.os.builtins import (
     NonSelectableBuiltins,
     SelectableBuiltins,
 )
-from execution.execute_entry_point import execute_entry_point, ExecutionContext, ExecutionInfo, BuiltinData
+from bootloader.contract.execute_entry_point import execute_entry_point, ExecutionContext, ExecutionInfo, BuiltinData
 
 // Loads the programs and executes them.
 //

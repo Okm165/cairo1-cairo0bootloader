@@ -18,7 +18,6 @@ setuptools.setup(
         "builtin_selection": ["*.cairo", "*/*.cairo"],
         "common.builtin_poseidon": ["*.cairo", "*/*.cairo"],
         "common": ["*.cairo", "*/*.cairo"],
-        "execution": ["*.cairo", "*/*.cairo"],
         "contract_class": ["*.cairo", "*/*.cairo"],
         "lang.compiler": ["cairo.ebnf", "lib/*.cairo"],
     },
