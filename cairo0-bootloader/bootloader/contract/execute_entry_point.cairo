@@ -185,7 +185,7 @@ func execute_entry_point{
     %{ vm_enter_scope() %}
 
     call abs contract_entry_point;
-    
+
     %{ vm_exit_scope() %}
 
     // Retrieve returned_builtin_ptrs_subset.

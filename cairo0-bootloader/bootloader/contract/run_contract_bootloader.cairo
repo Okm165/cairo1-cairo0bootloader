@@ -8,10 +8,7 @@ from starkware.cairo.common.cairo_builtins import (
 )
 from starkware.cairo.common.registers import get_fp_and_pc
 from contract_class.compiled_class import CompiledClass
-from starkware.starknet.builtins.segment_arena.segment_arena import (
-    new_arena,
-    SegmentArenaBuiltin
-)
+from starkware.starknet.builtins.segment_arena.segment_arena import new_arena, SegmentArenaBuiltin
 from starkware.starknet.core.os.builtins import (
     BuiltinEncodings,
     BuiltinParams,
@@ -87,7 +84,7 @@ func run_contract_bootloader{
 
     local local_builtin_params: BuiltinParams = BuiltinParams(
         builtin_encodings=&local_builtin_encodings,
-        builtin_instance_sizes=&local_builtin_instance_sizes
+        builtin_instance_sizes=&local_builtin_instance_sizes,
     );
     let builtin_params = &local_builtin_params;
 
