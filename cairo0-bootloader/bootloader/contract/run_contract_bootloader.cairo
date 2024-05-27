@@ -3,20 +3,28 @@ from starkware.cairo.common.cairo_builtins import (
     PoseidonBuiltin,
     BitwiseBuiltin,
     KeccakBuiltin,
+    SignatureBuiltin,
+    EcOpBuiltin,
 )
 from starkware.cairo.common.registers import get_fp_and_pc
 from contract_class.compiled_class import CompiledClass
-from starkware.starknet.builtins.segment_arena.segment_arena import new_arena
+from starkware.starknet.builtins.segment_arena.segment_arena import (
+    new_arena,
+    SegmentArenaBuiltin
+)
 from starkware.starknet.core.os.builtins import (
+    BuiltinEncodings,
+    BuiltinParams,
     BuiltinPointers,
     NonSelectableBuiltins,
+    BuiltinInstanceSizes,
     SelectableBuiltins,
+    update_builtin_ptrs,
 )
 from bootloader.contract.execute_entry_point import (
     execute_entry_point,
     ExecutionContext,
     ExecutionInfo,
-    BuiltinData,
 )
 
 // Loads the programs and executes them.
@@ -57,17 +65,31 @@ func run_contract_bootloader{
     );
     let builtin_ptrs = &local_builtin_ptrs;
 
-    local local_builtin_encodings: BuiltinData = BuiltinData(
-        output='output',
+    local local_builtin_encodings: BuiltinEncodings = BuiltinEncodings(
         pedersen='pedersen',
         range_check='range_check',
         ecdsa='ecdsa',
         bitwise='bitwise',
         ec_op='ec_op',
-        keccak='keccak',
         poseidon='poseidon',
+        segment_arena='segment_arena',
     );
-    let builtin_encodings = &local_builtin_encodings;
+
+    local local_builtin_instance_sizes: BuiltinInstanceSizes = BuiltinInstanceSizes(
+        pedersen=HashBuiltin.SIZE,
+        range_check=1,
+        ecdsa=SignatureBuiltin.SIZE,
+        bitwise=BitwiseBuiltin.SIZE,
+        ec_op=EcOpBuiltin.SIZE,
+        poseidon=PoseidonBuiltin.SIZE,
+        segment_arena=SegmentArenaBuiltin.SIZE,
+    );
+
+    local local_builtin_params: BuiltinParams = BuiltinParams(
+        builtin_encodings=&local_builtin_encodings,
+        builtin_instance_sizes=&local_builtin_instance_sizes
+    );
+    let builtin_params = &local_builtin_params;
 
     local calldata: felt*;
     %{ ids.calldata = segments.add() %}
@@ -90,7 +112,7 @@ func run_contract_bootloader{
         execution_info=&execution_info,
     );
 
-    with builtin_ptrs, builtin_encodings {
+    with builtin_ptrs, builtin_params {
         let (retdata_size, retdata) = execute_entry_point(compiled_class, &execution_context);
     }
 
