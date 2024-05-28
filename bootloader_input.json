@@ -66,7 +66,6 @@
             "0x482480017ff98000",
             "0x1",
             "0x208b7fff7fff7ffe",
-            "0x208b7fff7fff7ffe",
             "0x40780017fff7fff",
             "0x1",
             "0x480680017fff8000",
@@ -96,6 +95,7 @@
             "0x48127ffa7fff8000",
             "0x482480017ff98000",
             "0x1",
+            "0x208b7fff7fff7ffe",
             "0x208b7fff7fff7ffe"
         ],
         "bytecode_segment_lengths": [
