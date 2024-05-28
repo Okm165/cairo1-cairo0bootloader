@@ -6,7 +6,7 @@ if __name__ == "__main__":
 
     log_and_run(
         [
-            f"cairo-compile --cairo_path=. bootloader/contract/simple_bootloader.cairo --output {current_dir}/bootloader.json --proof_mode",
+            f"cairo-compile --cairo_path=. bootloader/contract/contract_bootloader.cairo --output {current_dir}/bootloader.json --proof_mode",
         ],
         "Compile bootloader program",
         cwd="cairo0-bootloader",

@@ -23,6 +23,7 @@ from bootloader.contract.execute_entry_point import (
     ExecutionContext,
     ExecutionInfo,
 )
+from starkware.starknet.core.os.constants import ENTRY_POINT_TYPE_EXTERNAL
 
 // Loads the programs and executes them.
 //
@@ -62,6 +63,8 @@ func run_contract_bootloader{
     );
     let builtin_ptrs = &local_builtin_ptrs;
 
+    %{ print("builtin_ptrs.selectable.range_check: ", ids.builtin_ptrs.selectable.range_check) %}
+
     local local_builtin_encodings: BuiltinEncodings = BuiltinEncodings(
         pedersen='pedersen',
         range_check='range_check',
@@ -92,15 +95,6 @@ func run_contract_bootloader{
     %{ ids.calldata = segments.add() %}
 
     local execution_info: ExecutionInfo = ExecutionInfo(selector=0);
-
-    from starkware.starknet.core.os.constants import (
-        DEFAULT_ENTRY_POINT_SELECTOR,
-        ENTRY_POINT_GAS_COST,
-        ENTRY_POINT_TYPE_CONSTRUCTOR,
-        ENTRY_POINT_TYPE_EXTERNAL,
-        ENTRY_POINT_TYPE_L1_HANDLER,
-        NOP_ENTRY_POINT_OFFSET,
-    )
 
     local execution_context: ExecutionContext = ExecutionContext(
         entry_point_type=ENTRY_POINT_TYPE_EXTERNAL,

@@ -46,6 +46,15 @@ func main{
         ids.compiled_class = segments.gen_arg(cairo_contract)
     %}
 
+    assert compiled_class.bytecode_ptr[compiled_class.bytecode_length] = 0x208b7fff7fff7ffe;
+
+    %{
+        vm_load_program(
+            contract_bootloader_input.compiled_class.get_runnable_program(entrypoint_builtins=[]),
+            ids.compiled_class.bytecode_ptr
+        )
+    %}
+
     run_contract_bootloader(compiled_class);
 
     return ();

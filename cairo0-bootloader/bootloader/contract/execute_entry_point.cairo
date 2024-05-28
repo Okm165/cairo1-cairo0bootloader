@@ -154,7 +154,13 @@ func execute_entry_point{
 
     local syscall_ptr: felt*;
 
-    %{ ids.syscall_ptr = segments.add() %}
+    %{
+        print("contract_entry_point:" , ids.contract_entry_point)
+        ids.syscall_ptr = segments.add()
+        from bootloader.contract.syscall_handler import SyscallHandler
+        syscall_handler = SyscallHandler(segments=segments)
+        syscall_handler.set_syscall_ptr(syscall_ptr=ids.syscall_ptr)
+    %}
 
     let builtin_ptrs: BuiltinPointers* = prepare_builtin_ptrs_for_execute(builtin_ptrs);
 
@@ -175,17 +181,22 @@ func execute_entry_point{
     // Use tempvar to pass the rest of the arguments to contract_entry_point().
     let current_ap = ap;
     tempvar args = EntryPointCallArguments(
-        gas_builtin=100000,
+        gas_builtin=0,
         syscall_ptr=syscall_ptr,
         calldata_start=calldata_start,
         calldata_end=calldata_end,
     );
     static_assert ap == current_ap + EntryPointCallArguments.SIZE;
 
-    %{ vm_enter_scope() %}
+    %{
+        print("builtin_ptrs:" , ids.builtin_ptrs)
+        print("syscall_ptr:" , ids.syscall_ptr)
+        print("calldata_start:" , ids.calldata_start)
+        print("calldata_end:" , ids.calldata_end)
+    %}
 
+    %{ vm_enter_scope({'syscall_handler': syscall_handler}) %}
     call abs contract_entry_point;
-
     %{ vm_exit_scope() %}
 
     // Retrieve returned_builtin_ptrs_subset.
@@ -198,17 +209,42 @@ func execute_entry_point{
         return_values_ptr, EntryPointReturnValues*
     );
 
+    assert entry_point_return_values.failure_flag = 0;
+
     let remaining_gas = entry_point_return_values.gas_builtin;
     let retdata_start = entry_point_return_values.retdata_start;
     let retdata_end = entry_point_return_values.retdata_end;
 
-    // let return_builtin_ptrs = update_builtin_ptrs(
-    //     builtin_params=builtin_params,
-    //     builtin_ptrs=builtin_ptrs,
-    //     n_selected_builtins=entry_point_n_builtins,
-    //     selected_encodings=entry_point_builtin_list,
-    //     selected_ptrs=returned_builtin_ptrs_subset,
-    // );
+    let return_builtin_ptrs = update_builtin_ptrs(
+        builtin_params=builtin_params,
+        builtin_ptrs=builtin_ptrs,
+        n_selected_builtins=entry_point_n_builtins,
+        selected_encodings=entry_point_builtin_list,
+        selected_ptrs=returned_builtin_ptrs_subset,
+    );
+
+    // Validate the segment_arena builtin.
+    // Note that as the segment_arena pointer points to the first unused element, we need to
+    // take segment_arena[-1] to get the actual values.
+    tempvar prev_segment_arena = &builtin_ptrs.selectable.segment_arena[-1];
+    tempvar current_segment_arena = &return_builtin_ptrs.selectable.segment_arena[-1];
+    assert prev_segment_arena.infos = current_segment_arena.infos;
+    validate_segment_arena(segment_arena=current_segment_arena);
+
+    let builtin_ptrs = return_builtin_ptrs;
+    // with syscall_ptr {
+    //     call_execute_syscalls(
+    //         block_context=block_context,
+    //         execution_context=execution_context,
+    //         syscall_ptr_end=entry_point_return_values.syscall_ptr,
+    //     );
+    // }
+
+    %{
+        print(ids.entry_point_return_values.failure_flag)
+        for i in range(0, 1):
+            print(hex(memory[ids.retdata_start + i]))
+    %}
 
     return (retdata_size=0, retdata=cast(0, felt*));
 }
