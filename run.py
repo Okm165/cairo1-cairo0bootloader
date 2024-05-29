@@ -5,7 +5,7 @@ if __name__ == "__main__":
         [
             "cairo-run \
         --program=bootloader.json \
-        --layout=recursive_with_poseidon \
+        --layout=starknet_with_keccak \
         --program_input=bootloader_input.json \
         --air_public_input=bootloader_public_input.json \
         --air_private_input=bootloader_private_input.json \
@@ -15,6 +15,6 @@ if __name__ == "__main__":
         --proof_mode \
         --print_info"
         ],
-        "Running cairo1 pie in cairo0 bootloader",
+        "Running contract in cairo0 bootloader",
         cwd=".",
     )
