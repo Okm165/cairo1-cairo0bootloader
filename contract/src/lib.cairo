@@ -1,10 +1,10 @@
 #[starknet::interface]
-pub trait IHelloStarknet<TContractState> {
+pub trait IHelloBootloader<TContractState> {
     fn main(ref self: TContractState, input: Array<felt252>) -> Array<felt252>;
 }
 
 #[starknet::contract]
-mod HelloStarknet {
+mod HelloBootloader {
     #[derive(Drop, Serde)]
     struct Input {
         a: u32,
@@ -23,7 +23,7 @@ mod HelloStarknet {
     struct Storage {}
 
     #[abi(embed_v0)]
-    impl HelloStarknetImpl of super::IHelloStarknet<ContractState> {
+    impl HelloBootloaderImpl of super::IHelloBootloader<ContractState> {
         fn main(ref self: ContractState, input: Array<felt252>) -> Array<felt252> {
             let mut input_span = input.span();
             let input = Serde::<Input>::deserialize(ref input_span).unwrap();
