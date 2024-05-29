@@ -181,7 +181,7 @@ func execute_entry_point{
     // Use tempvar to pass the rest of the arguments to contract_entry_point().
     let current_ap = ap;
     tempvar args = EntryPointCallArguments(
-        gas_builtin=0,
+        gas_builtin=1000000,
         syscall_ptr=syscall_ptr,
         calldata_start=calldata_start,
         calldata_end=calldata_end,
@@ -242,8 +242,8 @@ func execute_entry_point{
 
     %{
         print(ids.entry_point_return_values.failure_flag)
-        for i in range(0, 1):
-            print(hex(memory[ids.retdata_start + i]))
+        for i in range(0, 4):
+            print(memory[ids.retdata_start + i])
     %}
 
     return (retdata_size=0, retdata=cast(0, felt*));
