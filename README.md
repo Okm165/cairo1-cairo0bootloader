@@ -16,50 +16,32 @@ To set up the project environment and run the bootloader, follow these steps:
 
 4. **Running the Bootloader**: Start the bootloader with `python run.py`, which will load and execute the compiled Cairo1 contract within the Cairo0 environment.
 
+5. **Preparing bootloader_input.json (Optional)**:
+   - Run `Scarb build` in the contract folder.
+   - Use `starknet-sierra-compile INPUT OUTPUT --add-pythonic-hints`.
+   - Add a return footer at the end of the contract's bytecode (increase the bytecode segment size by one).
+   - Supply `bootloader_input.json` with new contract sierra class json.
+
 ---
 
 This example showcases merge of Cairo0 host provable environment and a Cairo1 developer frendly language:
 
 ```cairo
-#[starknet::interface]
-pub trait IHelloBootloader<TContractState> {
-    fn main(ref self: TContractState, input: Array<felt252>) -> Array<felt252>;
-}
-
 #[starknet::contract]
-mod HelloBootloader {
-    #[derive(Drop, Serde)]
-    struct Input {
-        a: u32,
-        b: u32,
-        c: u32,
-    }
-
-    #[derive(Drop, Serde)]
-    struct Output {
-        a_2: u32,
-        b_2: u32,
-        c_2: u32,
-    }
+mod Factorial {
+    use starknet::{ContractAddress, SyscallResult, SyscallResultTraitImpl};
+    use starknet::syscalls::call_contract_syscall;
 
     #[storage]
-    struct Storage {}
+    struct Storage{}
 
-    #[abi(embed_v0)]
-    impl HelloBootloaderImpl of super::IHelloBootloader<ContractState> {
-        fn main(ref self: ContractState, input: Array<felt252>) -> Array<felt252> {
-            let mut input_span = input.span();
-            let input = Serde::<Input>::deserialize(ref input_span).unwrap();
-
-            let a_2 = input.a * input.a;
-            let b_2 = input.b * input.b;
-            let c_2 = input.c * input.c;
-            assert(a_2 + b_2 == c_2, 'invalid value');
-
-            let mut output = array![];
-            Output { a_2, b_2, c_2, }.serialize(ref output);
-            output
-        }
+    #[external(v0)]
+    fn main(ref self: ContractState, address: ContractAddress) -> Span<felt252> {
+        // call_contract_syscall is modified POC syscall to just return calldata it received
+        let value: Span<felt252> = call_contract_syscall(
+            address, 0x1, array![0xa, 0xb, 0xc, 0xe].span(),
+        ).unwrap_syscall();
+        value
     }
 }
 ```
