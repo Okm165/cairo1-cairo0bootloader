@@ -9,6 +9,7 @@ from starkware.cairo.common.cairo_builtins import (
 )
 from starkware.cairo.common.registers import get_fp_and_pc
 from contract_class.compiled_class import CompiledClass, compiled_class_hash
+from starkware.cairo.common.alloc import alloc
 
 func main{
     output_ptr: felt*,
@@ -39,10 +40,6 @@ func main{
             visited_pcs=None,
         )
 
-        # Append necessary footer to the bytecode of the contract
-        compiled_class.bytecode.append(0x208b7fff7fff7ffe)
-        compiled_class.bytecode_segment_lengths[-1] += 1
-
         bytecode_segment_structure_with_footer = create_bytecode_segment_structure(
             bytecode=compiled_class.bytecode,
             bytecode_segment_lengths=compiled_class.bytecode_segment_lengths,
@@ -58,7 +55,17 @@ func main{
         ids.compiled_class = segments.gen_arg(cairo_contract)
     %}
 
+    let (builtin_costs: felt*) = alloc();
+    assert builtin_costs[0] = 0;
+    assert builtin_costs[1] = 0;
+    assert builtin_costs[2] = 0;
+    assert builtin_costs[3] = 0;
+    assert builtin_costs[4] = 0;
+
     assert compiled_class.bytecode_ptr[compiled_class.bytecode_length] = 0x208b7fff7fff7ffe;
+    assert compiled_class.bytecode_ptr[compiled_class.bytecode_length + 1] = cast(
+        builtin_costs, felt
+    );
 
     %{ bytecode_segment_structure = bytecode_segment_structure_no_footer %}
 
