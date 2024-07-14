@@ -7,12 +7,12 @@ from starkware.cairo.common.dict_access import DictAccess
 from starkware.cairo.common.find_element import find_element, search_sorted
 from starkware.cairo.common.math import assert_not_zero
 from starkware.cairo.common.registers import get_ap
+from bootloader.contract.execute_syscalls import execute_syscalls
 from starkware.starknet.builtins.segment_arena.segment_arena import (
     SegmentArenaBuiltin,
     validate_segment_arena,
 )
 from starkware.starknet.common.syscalls import TxInfo as DeprecatedTxInfo
-from starkware.starknet.core.os.block_context import BlockContext
 from starkware.starknet.core.os.builtins import (
     BuiltinEncodings,
     BuiltinParams,
@@ -31,19 +31,7 @@ from starkware.starknet.core.os.constants import (
 )
 from contract_class.compiled_class import CompiledClass, CompiledClassEntryPoint, CompiledClassFact
 from starkware.starknet.core.os.output import OsCarriedOutputs
-
-struct ExecutionInfo {
-    selector: felt,
-}
-
-// Represents the execution context during the execution of contract code.
-struct ExecutionContext {
-    entry_point_type: felt,
-    calldata_size: felt,
-    calldata: felt*,
-    // Additional information about the execution.
-    execution_info: ExecutionInfo*,
-}
+from bootloader.contract.execute_syscalls import ExecutionContext
 
 // Represents the arguments pushed to the stack before calling an entry point.
 struct EntryPointCallArguments {
@@ -65,15 +53,11 @@ struct EntryPointReturnValues {
 
 // Performs a Cairo jump to the function 'execute_syscalls'.
 // This function's signature must match the signature of 'execute_syscalls'.
-func call_execute_syscalls{
-    range_check_ptr,
-    syscall_ptr: felt*,
-    builtin_ptrs: BuiltinPointers*,
-    contract_state_changes: DictAccess*,
-    contract_class_changes: DictAccess*,
-    outputs: OsCarriedOutputs*,
-}(block_context: BlockContext*, execution_context: ExecutionContext*, syscall_ptr_end: felt*) {
-    %{ print("call_execute_syscalls") %}
+func call_execute_syscalls{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: BuiltinPointers*, dict_ptr: DictAccess*}(
+    execution_context: ExecutionContext*, syscall_ptr_end: felt*
+) {
+    execute_syscalls(execution_context, syscall_ptr_end);
+    return ();
 }
 
 // Returns the CompiledClassEntryPoint, based on 'compiled_class' and 'execution_context'.
@@ -128,10 +112,9 @@ func get_entry_point{range_check_ptr}(
 // and execution_context.execution_info.selector.
 //
 // Arguments:
-// block_context - a global context that is fixed throughout the block.
 // execution_context - The context for the current execution.
 func execute_entry_point{
-    range_check_ptr, builtin_ptrs: BuiltinPointers*, builtin_params: BuiltinParams*
+    range_check_ptr, builtin_ptrs: BuiltinPointers*, builtin_params: BuiltinParams*, dict_ptr: DictAccess*
 }(compiled_class: CompiledClass*, execution_context: ExecutionContext*) -> (
     retdata_size: felt, retdata: felt*
 ) {
@@ -158,7 +141,7 @@ func execute_entry_point{
         print("contract_entry_point:" , ids.contract_entry_point)
         ids.syscall_ptr = segments.add()
         from bootloader.contract.syscall_handler import SyscallHandler
-        syscall_handler = SyscallHandler(segments=segments)
+        syscall_handler = SyscallHandler(segments=segments, dict_manager=__dict_manager)
         syscall_handler.set_syscall_ptr(syscall_ptr=ids.syscall_ptr)
     %}
 
@@ -181,7 +164,7 @@ func execute_entry_point{
     // Use tempvar to pass the rest of the arguments to contract_entry_point().
     let current_ap = ap;
     tempvar args = EntryPointCallArguments(
-        gas_builtin=1000000,
+        gas_builtin=1000000000000,
         syscall_ptr=syscall_ptr,
         calldata_start=calldata_start,
         calldata_end=calldata_end,
@@ -232,17 +215,16 @@ func execute_entry_point{
     validate_segment_arena(segment_arena=current_segment_arena);
 
     let builtin_ptrs = return_builtin_ptrs;
-    // with syscall_ptr {
-    //     call_execute_syscalls(
-    //         block_context=block_context,
-    //         execution_context=execution_context,
-    //         syscall_ptr_end=entry_point_return_values.syscall_ptr,
-    //     );
-    // }
+    with syscall_ptr, dict_ptr {
+        call_execute_syscalls(
+            execution_context=execution_context,
+            syscall_ptr_end=entry_point_return_values.syscall_ptr,
+        );
+    }
 
     %{
         print(ids.entry_point_return_values.failure_flag)
-        for i in range(0, 4):
+        for i in range(0, 2):
             print(memory[ids.retdata_start + i])
     %}
 
