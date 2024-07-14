@@ -6,6 +6,7 @@ from starkware.cairo.lang.vm.relocatable import RelocatableValue, MaybeRelocatab
 from starkware.cairo.lang.vm.memory_segments import MemorySegmentManager
 from bootloader.contract.syscall_handler_base import SyscallHandlerBase
 from starkware.cairo.common.structs import CairoStructProxy
+from starkware.cairo.common.dict import DictManager
 from starkware.starknet.business_logic.execution.objects import (
     CallResult,
 )
@@ -18,10 +19,12 @@ class SyscallHandler(SyscallHandlerBase):
     def __init__(
         self,
         segments: MemorySegmentManager,
+        dict_manager: DictManager,
     ):
         print("init")
         super().__init__(segments=segments, initial_syscall_ptr=None)
         self.syscall_counter: Dict[str, int] = {}
+        self.dict_manager = dict_manager
         print("initialized")
 
     def set_syscall_ptr(self, syscall_ptr: RelocatableValue):
@@ -42,9 +45,14 @@ class SyscallHandler(SyscallHandlerBase):
         calldata = self._get_felt_range(
             start_addr=request.calldata_start, end_addr=request.calldata_end
         )
+
+        dictionary = self.dict_manager.get_dict(RelocatableValue.from_tuple([calldata[0], calldata[1]]))
+
+        print("dictionary", dictionary)
+
         print("calldata", calldata)
         return CallResult(
             gas_consumed=0,
             failure_flag=0,
-            retdata=calldata,
+            retdata=[int(dictionary[calldata[2]])],
         )

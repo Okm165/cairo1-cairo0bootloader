@@ -57,7 +57,7 @@ struct ExecutionContext {
 // Arguments:
 // execution_context - The execution context in which the system calls need to be executed.
 // syscall_ptr_end - a pointer to the end of the syscall segment.
-func execute_syscalls{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: BuiltinPointers*}(
+func execute_syscalls{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: BuiltinPointers*, dict_ptr: DictAccess*}(
     execution_context: ExecutionContext*, syscall_ptr_end: felt*
 ) {
     if (syscall_ptr == syscall_ptr_end) {
@@ -73,7 +73,7 @@ func execute_syscalls{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: Builtin
 }
 
 // Executes a syscall that calls another contract.
-func execute_call_contract{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: BuiltinPointers*}(
+func execute_call_contract{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: BuiltinPointers*, dict_ptr: DictAccess*}(
     caller_execution_context: ExecutionContext*
 ) {
     let request_header = cast(syscall_ptr, RequestHeader*);
@@ -82,33 +82,28 @@ func execute_call_contract{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: Bu
     let call_contract_request = cast(syscall_ptr, CallContractRequest*);
     let syscall_ptr = syscall_ptr + CallContractRequest.SIZE;
 
-    tempvar contract_address = call_contract_request.contract_address;
-    assert contract_address = 0;
+    %{
+        print("call_contract_request", memory[ids.call_contract_request.calldata_start + 2])
+    %}
 
-    tempvar calldata_start = call_contract_request.calldata_start;
-    tempvar calldata_size = call_contract_request.calldata_end - calldata_start;
-    assert calldata_size = 4;
-    assert calldata_start[0] = 0xa;
-    assert calldata_start[1] = 0xb;
-    assert calldata_start[2] = 0xc;
-    assert calldata_start[3] = 0xe;
+    let (value) = dict_read(call_contract_request.calldata_start[2]);
+
+    %{
+        print("value", ids.value)
+    %}
 
     let response_header = cast(syscall_ptr, ResponseHeader*);
     let syscall_ptr = syscall_ptr + ResponseHeader.SIZE;
 
-    assert [response_header] = ResponseHeader(gas=1000000000000, failure_flag=0);
-
     let call_contract_response = cast(syscall_ptr, CallContractResponse*);
-    // Advance syscall pointer to the next syscall.
     let syscall_ptr = syscall_ptr + CallContractResponse.SIZE;
 
-    tempvar calldata_start = call_contract_response.retdata_start;
-    tempvar calldata_size = call_contract_response.retdata_end - calldata_start;
-    assert calldata_size = 4;
-    assert calldata_start[0] = 0xa;
-    assert calldata_start[1] = 0xb;
-    assert calldata_start[2] = 0xc;
-    assert calldata_start[3] = 0xe;
+    %{
+        print("call_contract_response", memory[ids.call_contract_response.retdata_start + 0])
+    %}
+
+    assert value = call_contract_response.retdata_start[0];
+
 
     return ();
 }

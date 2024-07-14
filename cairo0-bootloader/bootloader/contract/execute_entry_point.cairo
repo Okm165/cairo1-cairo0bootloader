@@ -53,7 +53,7 @@ struct EntryPointReturnValues {
 
 // Performs a Cairo jump to the function 'execute_syscalls'.
 // This function's signature must match the signature of 'execute_syscalls'.
-func call_execute_syscalls{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: BuiltinPointers*}(
+func call_execute_syscalls{range_check_ptr, syscall_ptr: felt*, builtin_ptrs: BuiltinPointers*, dict_ptr: DictAccess*}(
     execution_context: ExecutionContext*, syscall_ptr_end: felt*
 ) {
     execute_syscalls(execution_context, syscall_ptr_end);
@@ -114,7 +114,7 @@ func get_entry_point{range_check_ptr}(
 // Arguments:
 // execution_context - The context for the current execution.
 func execute_entry_point{
-    range_check_ptr, builtin_ptrs: BuiltinPointers*, builtin_params: BuiltinParams*
+    range_check_ptr, builtin_ptrs: BuiltinPointers*, builtin_params: BuiltinParams*, dict_ptr: DictAccess*
 }(compiled_class: CompiledClass*, execution_context: ExecutionContext*) -> (
     retdata_size: felt, retdata: felt*
 ) {
@@ -141,7 +141,7 @@ func execute_entry_point{
         print("contract_entry_point:" , ids.contract_entry_point)
         ids.syscall_ptr = segments.add()
         from bootloader.contract.syscall_handler import SyscallHandler
-        syscall_handler = SyscallHandler(segments=segments)
+        syscall_handler = SyscallHandler(segments=segments, dict_manager=__dict_manager)
         syscall_handler.set_syscall_ptr(syscall_ptr=ids.syscall_ptr)
     %}
 
@@ -215,7 +215,7 @@ func execute_entry_point{
     validate_segment_arena(segment_arena=current_segment_arena);
 
     let builtin_ptrs = return_builtin_ptrs;
-    with syscall_ptr {
+    with syscall_ptr, dict_ptr {
         call_execute_syscalls(
             execution_context=execution_context,
             syscall_ptr_end=entry_point_return_values.syscall_ptr,
@@ -224,7 +224,7 @@ func execute_entry_point{
 
     %{
         print(ids.entry_point_return_values.failure_flag)
-        for i in range(0, 5):
+        for i in range(0, 2):
             print(memory[ids.retdata_start + i])
     %}
 
