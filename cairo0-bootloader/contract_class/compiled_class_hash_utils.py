@@ -2,12 +2,9 @@ import itertools
 import os
 from functools import lru_cache
 from typing import List
-
 from starkware.cairo.common.structs import CairoStructFactory, CairoStructProxy
 from starkware.cairo.lang.cairo_constants import DEFAULT_PRIME
 from starkware.cairo.lang.compiler.cairo_compile import compile_cairo_files
-from starkware.cairo.lang.compiler.identifier_definition import ConstDefinition
-from starkware.cairo.lang.compiler.identifier_manager import IdentifierManager
 from starkware.cairo.lang.compiler.program import Program
 from starkware.cairo.lang.compiler.scoped_name import ScopedName
 from starkware.python.utils import as_non_optional, from_bytes
@@ -98,7 +95,7 @@ def get_compiled_class_struct(
     assert len(bytecode) == len(compiled_class.bytecode)
 
     return structs.CompiledClass(
-        compiled_class_version="",
+        compiled_class_version=22904329030628021342914013343516106642993,  # COMPILED_CLASS_V1
         n_external_functions=len(external_functions),
         external_functions=flat_external_functions,
         n_l1_handlers=len(l1_handlers),

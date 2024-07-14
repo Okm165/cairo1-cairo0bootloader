@@ -8,7 +8,8 @@ from starkware.cairo.common.cairo_builtins import (
     KeccakBuiltin,
 )
 from starkware.cairo.common.registers import get_fp_and_pc
-from contract_class.compiled_class import CompiledClass
+from contract_class.compiled_class import CompiledClass, compiled_class_hash
+from starkware.cairo.common.alloc import alloc
 
 func main{
     output_ptr: felt*,
@@ -25,7 +26,7 @@ func main{
 
     %{
         from bootloader.objects import ContractBootloaderInput
-        contract_bootloader_input = ContractBootloaderInput.Schema().load(program_input)
+        compiled_class = ContractBootloaderInput.Schema().load(program_input).compiled_class
     %}
 
     // Fetch contract data form hints.
@@ -33,24 +34,50 @@ func main{
         from starkware.starknet.core.os.contract_class.compiled_class_hash import create_bytecode_segment_structure
         from contract_class.compiled_class_hash_utils import get_compiled_class_struct
 
-        bytecode_segment_structure = create_bytecode_segment_structure(
-            bytecode=contract_bootloader_input.compiled_class.bytecode,
-            bytecode_segment_lengths=contract_bootloader_input.compiled_class.bytecode_segment_lengths,
+        bytecode_segment_structure_no_footer = create_bytecode_segment_structure(
+            bytecode=compiled_class.bytecode,
+            bytecode_segment_lengths=compiled_class.bytecode_segment_lengths,
             visited_pcs=None,
         )
 
+        bytecode_segment_structure_with_footer = create_bytecode_segment_structure(
+            bytecode=compiled_class.bytecode,
+            bytecode_segment_lengths=compiled_class.bytecode_segment_lengths,
+            visited_pcs=None,
+        )
+
+        bytecode_segment_structure = bytecode_segment_structure_with_footer
+
         cairo_contract = get_compiled_class_struct(
-            compiled_class=contract_bootloader_input.compiled_class,
+            compiled_class=compiled_class,
             bytecode=bytecode_segment_structure.bytecode_with_skipped_segments()
         )
         ids.compiled_class = segments.gen_arg(cairo_contract)
     %}
 
+    let (builtin_costs: felt*) = alloc();
+    assert builtin_costs[0] = 0;
+    assert builtin_costs[1] = 0;
+    assert builtin_costs[2] = 0;
+    assert builtin_costs[3] = 0;
+    assert builtin_costs[4] = 0;
+
     assert compiled_class.bytecode_ptr[compiled_class.bytecode_length] = 0x208b7fff7fff7ffe;
+    assert compiled_class.bytecode_ptr[compiled_class.bytecode_length + 1] = cast(
+        builtin_costs, felt
+    );
+
+    %{ bytecode_segment_structure = bytecode_segment_structure_no_footer %}
+
+    let (local program_hash) = compiled_class_hash(compiled_class=compiled_class);
+
+    %{ bytecode_segment_structure = bytecode_segment_structure_with_footer %}
+
+    %{ print("program_hash", hex(ids.program_hash)) %}
 
     %{
         vm_load_program(
-            contract_bootloader_input.compiled_class.get_runnable_program(entrypoint_builtins=[]),
+            compiled_class.get_runnable_program(entrypoint_builtins=[]),
             ids.compiled_class.bytecode_ptr
         )
     %}
