@@ -63,7 +63,12 @@ func run_contract_bootloader{
     );
     let builtin_ptrs = &local_builtin_ptrs;
 
+    %{ print("builtin_ptrs.selectable.pedersen: ", ids.builtin_ptrs.selectable.pedersen) %}
     %{ print("builtin_ptrs.selectable.range_check: ", ids.builtin_ptrs.selectable.range_check) %}
+    %{ print("builtin_ptrs.selectable.ecdsa: ", ids.builtin_ptrs.selectable.ecdsa) %}
+    %{ print("builtin_ptrs.selectable.bitwise: ", ids.builtin_ptrs.selectable.bitwise) %}
+    %{ print("builtin_ptrs.selectable.ec_op: ", ids.builtin_ptrs.selectable.ec_op) %}
+    %{ print("builtin_ptrs.selectable.poseidon: ", ids.builtin_ptrs.selectable.poseidon) %}
 
     local local_builtin_encodings: BuiltinEncodings = BuiltinEncodings(
         pedersen='pedersen',
